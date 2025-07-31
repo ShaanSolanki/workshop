@@ -1,13 +1,32 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router";
+import { toast } from "react-hot-toast";
+import axios from "axios";
 
 function CreatePage() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // TODO: Add note creation logic here
-    console.log("Creating note:", { title, content });
+    setLoading(true);
+    
+    try {
+      const response = await axios.post('http://localhost:5001/notes/create', {
+        title,
+        content
+      });
+
+      toast.success('Note created successfully!');
+      navigate('/');
+    } catch (error) {
+      toast.error('Error creating note');
+      console.error('Error:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -72,22 +91,27 @@ function CreatePage() {
             <div className="flex gap-4 pt-4">
               <button
                 type="submit"
-                className="flex-1 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold py-3 px-6 rounded-lg hover:from-blue-600 hover:to-purple-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl"
+                disabled={loading}
+                className="flex-1 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold py-3 px-6 rounded-lg hover:from-blue-600 hover:to-purple-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <svg
-                  className="w-5 h-5 mr-2 inline"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                  />
-                </svg>
-                Create Note
+                {loading ? (
+                  <span className="loading loading-spinner loading-sm"></span>
+                ) : (
+                  <svg
+                    className="w-5 h-5 mr-2 inline"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                    />
+                  </svg>
+                )}
+                {loading ? 'Creating...' : 'Create Note'}
               </button>
 
               <button

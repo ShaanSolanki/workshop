@@ -150,11 +150,13 @@ const NoteDetail = () => {
                 rows="12"
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
               />
-            ) : (
-              <div className="prose max-w-none">
-                <p className="text-gray-700 whitespace-pre-wrap">{note.content}</p>
-              </div>
-            )}
+                         ) : (
+               <div className="bg-gray-50 rounded-lg p-4 min-h-[200px] max-h-[500px] overflow-y-auto">
+                 <div className="text-gray-700 whitespace-pre-wrap leading-relaxed text-base break-words">
+                   {note.content}
+                 </div>
+               </div>
+             )}
           </div>
 
           <div className="text-sm text-gray-500">
